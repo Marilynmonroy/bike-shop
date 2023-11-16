@@ -2,6 +2,7 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { EmailServerService } from './email-server.service';
 import { OrderEntity } from 'src/orders/entities/order.entity';
 import { CustomerEntity } from 'src/customers/entities/customer.entity';
+import { BicycleEntity } from 'src/bicycles/entities/bicycle.entity';
 
 @Controller('email-server')
 export class EmailServerController {
@@ -9,9 +10,14 @@ export class EmailServerController {
 
   @Post()
   async sendOrderReport(
-    @Body() data: { order: OrderEntity; customer: CustomerEntity },
+    @Body()
+    data: {
+      order: OrderEntity;
+      customer: CustomerEntity;
+      bicycle: BicycleEntity;
+    },
   ): Promise<void> {
-    const { order, customer } = data;
+    const { order, customer, bicycle } = data;
 
     if (!order || !customer || !customer.email) {
       throw new Error(
@@ -19,6 +25,6 @@ export class EmailServerController {
       );
     }
 
-    await this.emailServerService.sendOrderReport(order, customer);
+    await this.emailServerService.sendOrderReport(order, customer, bicycle);
   }
 }

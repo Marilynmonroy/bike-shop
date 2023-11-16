@@ -12,6 +12,7 @@ export class BicyclesRepository {
 
   async create(createBicycleDto: CreateBicycleDto): Promise<BicycleEntity> {
     const { customerEmail } = createBicycleDto;
+    delete createBicycleDto.customerEmail;
     const customer = await this.prisma.customer.findUnique({
       where: {
         email: customerEmail,

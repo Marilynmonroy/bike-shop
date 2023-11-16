@@ -26,7 +26,7 @@ export class OrdersRepository {
     });
 
     if (!customer || !bicycle) {
-      throw new NotFoundError('Cliente o bike no encontrado');
+      throw new NotFoundError('Cliente o bike no encontrados');
     }
 
     const data: Prisma.OrderCreateInput = {
@@ -91,25 +91,29 @@ export class OrdersRepository {
     id: number,
     updateOrderDto: UpdateOrderDto,
   ): Promise<OrderEntity> {
-    const { customerEmail } = updateOrderDto;
+    const { customerEmail, bicycleId } = updateOrderDto;
 
-    if (!customerEmail) {
+    if (!customerEmail || !bicycleId) {
       return this.prisma.order.update({
         data: updateOrderDto,
         where: { id },
       });
     }
-
     delete updateOrderDto.customerEmail;
-
+    delete updateOrderDto.bicycleId;
     const customer = await this.prisma.customer.findUnique({
       where: {
         email: customerEmail,
       },
     });
+    const bicycle = await this.prisma.bicycle.findUnique({
+      where: {
+        id: bicycleId,
+      },
+    });
 
-    if (!customer) {
-      throw new NotFoundError('Cliente no encontrado');
+    if (!customer || !bicycle) {
+      throw new NotFoundError('Cliente ou bike no encontrados');
     }
 
     const data: Prisma.OrderUpdateInput = {
@@ -117,6 +121,11 @@ export class OrdersRepository {
       customer: {
         connect: {
           email: customerEmail,
+        },
+      },
+      bicycle: {
+        connect: {
+          id: bicycleId,
         },
       },
     };
@@ -128,6 +137,13 @@ export class OrdersRepository {
         customer: {
           select: {
             name: true,
+            email: true,
+          },
+        },
+        bicycle: {
+          select: {
+            id: true,
+            color: true,
           },
         },
       },
