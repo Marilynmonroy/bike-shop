@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Status } from '@prisma/client';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateOrderDto {
   @ApiProperty({ description: 'Descrição da ordem' })
@@ -8,7 +8,8 @@ export class CreateOrderDto {
   @IsNotEmpty()
   description: string;
 
-  @ApiProperty({ description: 'Estado da ordem', default: ['Incomplete'] })
+  @ApiProperty({ description: 'Estado da ordem', default: ['incomplete'] })
+  @IsEnum(['completed', 'incomplete'])
   status: Status;
 
   @ApiProperty({ description: 'Email do usuário' })
@@ -16,11 +17,10 @@ export class CreateOrderDto {
   customerEmail: string;
 
   @ApiProperty({ description: 'Id da bike' })
-  @IsNotEmpty()
   @IsNumber()
   bicycleId: number;
 
   @ApiProperty({ description: 'Valor do serviço' })
   @IsNotEmpty()
-  value: string;
+  value: number;
 }

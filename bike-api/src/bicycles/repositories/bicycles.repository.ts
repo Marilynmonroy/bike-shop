@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BicycleEntity } from '../entities/bicycle.entity';
@@ -13,7 +12,6 @@ export class BicyclesRepository {
 
   async create(createBicycleDto: CreateBicycleDto): Promise<BicycleEntity> {
     const { customerEmail } = createBicycleDto;
-    delete createBicycleDto.customerEmail;
     const customer = await this.prisma.customer.findUnique({
       where: {
         email: customerEmail,

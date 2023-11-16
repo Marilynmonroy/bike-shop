@@ -13,6 +13,7 @@ export class OrdersRepository {
   async create(createOrderDto: CreateOrderDto): Promise<OrderEntity> {
     const { customerEmail, bicycleId } = createOrderDto;
     delete createOrderDto.customerEmail;
+    delete createOrderDto.bicycleId;
     const customer = await this.prisma.customer.findUnique({
       where: {
         email: customerEmail,

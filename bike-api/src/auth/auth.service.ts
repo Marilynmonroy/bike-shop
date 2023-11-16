@@ -58,9 +58,15 @@ export class AuthService {
         username,
       },
     });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedError('Username ou senha incorretos');
+
+    if (!user) {
+      throw new UnauthorizedError('Usuário ou senha incorretos');
     }
+
+    if (!(await bcrypt.compare(password, user.password))) {
+      throw new UnauthorizedError('Usuário ou senha incorretos');
+    }
+
     return this.createToken(user);
   }
 

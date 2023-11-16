@@ -20,12 +20,12 @@ model Customer {
 model Order {
   id          Int       @id @default(autoincrement())
   description String
+  status      Status    @default(incomplete)
   createdAt   DateTime  @default(now())
   updateAt    DateTime  @default(now())
   value       Decimal
   customerId  Int?
   bicycleId   Int?
-  status      Status    @default(Incomplete)
   bicycle     Bicycle?  @relation(fields: [bicycleId], references: [id])
   customer    Customer? @relation(fields: [customerId], references: [id])
 }
@@ -42,13 +42,13 @@ model Bicycle {
 
 model User {
   id        Int      @id @default(autoincrement())
-  username  String
+  username  String   @unique
   password  String
   createdAt DateTime @default(now())
   updateAt  DateTime @default(now())
 }
 
 enum Status {
-  Incomplete
-  Complete
+  completed
+  incomplete
 }

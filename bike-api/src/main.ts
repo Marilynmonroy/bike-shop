@@ -6,6 +6,7 @@ import { UnauthorizedInterceptor } from './common/errors/interceptors/Unauthoriz
 import { NotFoundInterceptor } from './common/errors/interceptors/notfound.Interceptor';
 import { ConflictInterceptor } from './common/errors/interceptors/conflict.Interceptor';
 import { DatabaseInterceptor } from './common/errors/interceptors/database.Interceptor';
+import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 
 async function bootstrap() {
@@ -20,6 +21,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.use(cors());
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({
