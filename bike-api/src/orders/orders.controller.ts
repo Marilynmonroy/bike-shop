@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
@@ -12,6 +11,7 @@ import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiForbiddenResponse, ApiTags } from '@nestjs/swagger';
+import { EmailOrderDto } from './dto/email-order.dto';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -46,5 +46,10 @@ export class OrdersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.ordersService.remove(+id);
+  }
+
+  @Post('email')
+  async email(@Body() { id, customerEmail }: EmailOrderDto) {
+    return this.ordersService.sendEmail(id, customerEmail);
   }
 }

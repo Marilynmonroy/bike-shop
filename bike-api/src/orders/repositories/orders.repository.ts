@@ -5,10 +5,15 @@ import { CreateOrderDto } from '../dto/create-order.dto';
 import { UpdateOrderDto } from '../dto/update-order.dto';
 import { Prisma } from '@prisma/client';
 import { NotFoundError } from 'src/common/errors/types/NotFoundError';
+import { MailerService } from '@nestjs-modules/mailer';
+import { UnauthorizedError } from 'src/common/errors/types/UnauthorizedError';
 
 @Injectable()
 export class OrdersRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private mailService: MailerService,
+  ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<OrderEntity> {
     const { customerEmail, bicycleId } = createOrderDto;
@@ -156,5 +161,29 @@ export class OrdersRepository {
         id,
       },
     });
+  }
+
+  async sendEmail(id: number, customerEmail: string) {
+    const order = await this.prisma.order.findUnique({
+      where: {
+        id,
+      },
+    });
+    const customer = await this.prisma.customer.findUnique({
+      where: {
+        email: customerEmail,
+      },
+    });
+
+    if (!customer || !order) {
+      throw new UnauthorizedError('Email incorreto');
+    }
+
+    await this.mailService.sendMail({
+      subject: 'seu joão bikes',
+      to: customerEmail,
+      html: `Oi ${customer.email} a sua order foi ${order.id} e esta no status ${order.status}`,
+    });
+    return true;
   }
 }

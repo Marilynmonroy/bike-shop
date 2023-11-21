@@ -32,4 +32,8 @@ export class OrdersService {
   remove(id: number) {
     return this.repository.remove(id);
   }
+
+  sendEmail(id: number, customerEmail: string) {
+    return this.repository.sendEmail(id, customerEmail);
+  }
 }
